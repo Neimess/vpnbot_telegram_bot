@@ -1,0 +1,86 @@
+[project]
+name = "lab_1"
+version = "0.1.0"
+description = "ITMO_LAB_1"
+readme = "README.md"
+requires-python = ">=3.12.0"
+dependencies = [
+    "aiogram>=3.18.0",
+    "aiohttp>=3.11.13",
+    "aiosqlite>=0.21.0",
+    "babel>=2.17.0",
+    "pydantic-settings>=2.8.1",
+    "pyjwt>=2.10.1",
+    "requests>=2.32.3",
+    "sqlalchemy>=2.0.39",
+    "uvloop>=0.21.0",
+    "yoomoney>=0.1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.25.3",
+    "pytest-cov>=6.0.0",
+    "pytest-forked>=1.6.0",
+    "pytest-randomly>=3.16.0",
+    "ruff>=0.11.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+xfail_strict = true
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle error
+    "W",   # pycodestyle warning
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-namings
+    "C",   # flake8-comprehensions
+    "G",   # flake8-logging-format
+    "DTZ", # flake8-datetimetz
+    "T20", # flake8-print
+    "PL",  # pylint,
+    "SIM", # simplifier
+    "B",   # `flake8-bugbear`
+]
+ignore = [
+    "C901",    # too complex
+    "C401",    # unnecessary generator (rewrite as a `set` comprehension)
+    "C402",    # unnecessary generator (rewrite as a `dict` comprehension)
+    "PLR0911", # too many return statements
+    "PLR0912", # too many branches 
+    "PLR0913", # too many arguments in function definition
+    "PLR2004", # magic value used in comparison
+    "T201",    # print
+    "PLR0915"  # Too many statement
+]
+
+[tool.ruff]
+line-length = 130
+include = ["src/**/*.py", "tests/**/*.py"]
+exclude = ["migrations", "docs", "venv", "__pycache__"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = false
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true 
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+warn_return_any = true
+files = "src/**/*.py"
+
