@@ -86,7 +86,7 @@ class TelegramBot:
         if not label:
             await message.edit_text("Что то пошло не так, попробуйте позже")
             return
-        keyboard = await self.payment_manager.get_payment_keyboard(amount=2, label=label)
+        keyboard = await self.payment_manager.get_payment_keyboard(amount=settings.VPN_PRICE, label=label)
         try:
             await message.edit_text("💳 Нажмите кнопку ниже, чтобы оплатить подписку на 30 дней:", reply_markup=keyboard)
         except TelegramAPIError:

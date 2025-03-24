@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     YOOMONEY_TOKEN: str
     YOOMONEY_RECEIVER: str
     ADMIN_SECRET: str
+    VPN_PRICE: int
     model_config = ConfigDict(extra="ignore", env_file=".env")
 
 
