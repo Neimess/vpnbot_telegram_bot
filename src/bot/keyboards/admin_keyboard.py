@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+
 def get_admin_main_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -9,6 +10,7 @@ def get_admin_main_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🔙 Назад", callback_data="menu:back")],
         ]
     )
+
 
 def get_admin_users_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
@@ -20,15 +22,7 @@ def get_admin_users_keyboard() -> InlineKeyboardMarkup:
         ]
     )
 
-def get_admin_subscriptions_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="📅 Продлить подписку", callback_data="admin:extend_sub")],
-            [InlineKeyboardButton(text="🔙 Назад", callback_data="admin:main")],
-        ]
-    )
 
-    
 def get_admin_configs_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -36,6 +30,7 @@ def get_admin_configs_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🔙 Назад", callback_data="admin:main")],
         ]
     )
+
 
 def get_admin_subscriptions_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(

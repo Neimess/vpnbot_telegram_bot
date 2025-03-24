@@ -5,7 +5,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable
 
-from configs.config import settings
+from config.config import settings
 
 LOG_DIR = Path("logs")
 LOG_FILE = LOG_DIR / "app.log"

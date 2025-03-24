@@ -1,16 +1,11 @@
-import asyncio
-from babel.dates import format_datetime
-from aiogram import types
-
-from database.connection import database
-from src.bot.keyboards.settings_keyboards import get_user_keyboard
-from src.bot.keyboards.auth_keyboard import get_registration_keyboard
-from src.utils import error_handler, log, token_required, payed_required, logger
-from database.crud import get_user, create_user
 from datetime import datetime
+
+from aiogram import types
+from babel.dates import format_datetime
+
+from src.bot.keyboards.auth_keyboard import get_registration_keyboard
+from src.utils import log, logger, payed_required, token_required
 from src.utils.helpers import handle_api_error
-from src.bot.keyboards.navigations import get_main_menu_keyboard
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 @log
@@ -33,6 +28,7 @@ async def get_user_handler(self, message: types.Message):
 
         if status != 200:
             await handle_api_error(message, status, data.get("error"))
+            await message.answer("Вы еще не зарегистрированы, зарегистрируйтесь пожалуйста.")
             return
 
         expires_at_raw = data.get("expires_at")

@@ -1,7 +1,8 @@
-import aiohttp
 import random
-import logging
-from configs import settings
+
+import aiohttp
+
+from config import settings
 
 
 class BaseAPIClient:
@@ -23,12 +24,14 @@ class BaseAPIClient:
 
     async def send_request(self, method: str, endpoint: str, json: dict = None) -> dict:
         url = f"{self.get_server_url()}{endpoint}"
-        async with aiohttp.ClientSession() as session:
-            async with session.request(method, url, headers=self.get_headers(), json=json) as response:
-                status = response.status
-                try:
-                    data = await response.json()
-                except Exception:
-                    data = {"error": "Invalid JSON response from server"}
+        async with (
+            aiohttp.ClientSession() as session,
+            session.request(method, url, headers=self.get_headers(), json=json) as response,
+        ):
+            status = response.status
+            try:
+                data = await response.json()
+            except Exception:
+                data = {"error": "Invalid JSON response from server"}
 
-                return {"status": status, "data": data}
+            return {"status": status, "data": data}

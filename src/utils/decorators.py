@@ -1,11 +1,13 @@
 from functools import wraps
-from aiogram.types import Message, CallbackQuery
-import jwt.exceptions
-from database.crud import get_user, update_user_token
-from configs import settings
-from src.utils.loggers import logger
-from src.api import *
+
 import jwt
+import jwt.exceptions
+from aiogram.types import CallbackQuery, Message
+
+from config import settings
+from database.crud import get_user, update_user_token
+from src.api import AuthAPIClient
+from src.utils.loggers import logger
 
 
 def error_handler(func):
@@ -38,8 +40,14 @@ def token_required(handler_func):
 
         user = await get_user(telegram_id)
         if not user or not user.access_token:
-            logger.error("Не удалось определить user.")
-            return {"status_code": 401, "message": "Unauthorized: No Token"}
+            logger.warning(f"Пользователь {telegram_id} не зарегистрирован или токен отсутствует.")
+
+            if isinstance(obj, Message):
+                await obj.answer("❗ Вы не зарегистрированы. Пожалуйста, авторизуйтесь в боте.")
+            elif isinstance(obj, CallbackQuery):
+                await obj.answer("❗ Вы не зарегистрированы. Авторизуйтесь через /start.", show_alert=True)
+
+            return
 
         try:
             jwt.decode(user.access_token, settings.JWT_SECRET, algorithms=["HS256"])

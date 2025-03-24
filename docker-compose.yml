@@ -1,7 +1,7 @@
 services:
   bot:
-    image: neimes/cian_scraper:latest
-    container_name: cian_scraper
+    image: neimes/vpn_bot:latest
+    container_name: vpn_bot
     restart: no
     env_file:
       - .env

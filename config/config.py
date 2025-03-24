@@ -1,6 +1,5 @@
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
-from typing import List
 
 class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./project.db"
@@ -16,3 +15,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+
+
+print(settings.DATABASE_URL)

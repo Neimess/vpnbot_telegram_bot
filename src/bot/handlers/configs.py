@@ -1,6 +1,7 @@
 from aiogram import types
-from src.utils.decorators import token_required, payed_required
+
 from database.crud import get_user
+from src.utils.decorators import payed_required, token_required
 
 
 @token_required

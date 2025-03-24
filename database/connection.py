@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from contextlib import asynccontextmanager
 from database.models import Base
-from configs.config import settings
+from config.config import settings
 
 
 

@@ -1,5 +1,6 @@
-from yoomoney import Client, Quickpay
 import asyncio
+
+from yoomoney import Client, Quickpay
 
 
 class YooMoneyClient:

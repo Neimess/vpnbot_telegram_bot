@@ -6,4 +6,4 @@ COPY . /app
 
 RUN ["uv", "sync", "--no-dev"]
 
-CMD ["uv", "run", "--color", "auto", "--no-cache", "main.py" ]
+CMD ["uv", "run", "--no-cache", "main.py" ]

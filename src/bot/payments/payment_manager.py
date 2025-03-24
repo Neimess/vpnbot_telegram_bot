@@ -1,7 +1,8 @@
 from uuid import uuid4
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types.web_app_info import WebAppInfo
-from src.bot.keyboards.navigations import get_back_button
+
 from .yoomoney_client import YooMoneyClient
 
 

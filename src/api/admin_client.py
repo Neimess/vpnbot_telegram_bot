@@ -1,5 +1,6 @@
+from config.config import settings
 from src.api.base_client import BaseAPIClient
-from configs.config import settings
+
 
 class AdminAPIClient(BaseAPIClient):
     async def get_admin_token(self, telegram_id: int) -> dict:
@@ -7,13 +8,9 @@ class AdminAPIClient(BaseAPIClient):
         Получение токена администратора по telegram_id и admin_secret.
         POST /api/auth/refresh_admin_token
         """
-        payload = {
-            "telegram_id": telegram_id,
-            "admin_secret": settings.ADMIN_SECRET
-        }
+        payload = {"telegram_id": telegram_id, "admin_secret": settings.ADMIN_SECRET}
         return await self.send_request("POST", "/api/auth/refresh_admin_token", json=payload)
 
-        
     async def get_all_users(self) -> dict:
         """
         Получение всех пользователей.

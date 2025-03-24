@@ -1,22 +1,27 @@
-from aiogram import types, Router
+from datetime import datetime, timezone
+
+from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
-from src.bot.keyboards.navigations import get_back_button
-from src.bot.keyboards.admin_keyboard import *
-from src.utils.helpers import handle_api_error
-from database.crud import confirm_local_payment, get_user, create_user, get_user_label
-from datetime import datetime
-from .states import RegistrationState, AdminState
-from aiogram.fsm.context import FSMContext
-from src.bot.keyboards.navigations import get_main_menu_keyboard
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+from database.crud import confirm_local_payment, create_user, get_user, get_user_label
+from src.bot.keyboards.admin_keyboard import (
+    get_admin_configs_keyboard,
+    get_admin_main_keyboard,
+    get_admin_subscriptions_keyboard,
+    get_admin_users_keyboard,
+)
+from src.bot.keyboards.navigations import get_main_menu_keyboard
+from src.utils.helpers import handle_api_error
+
+from .states import AdminState, RegistrationState
 
 router = Router()
 
 
 def get_router() -> Router:
     return router
-
 
 
 async def cancel(callback_query: types.CallbackQuery):
@@ -28,9 +33,9 @@ async def check_payment_callback(callback_query: types.CallbackQuery):
     label = await get_user_label(telegram_id)
     bot_instance = callback_query.bot.bot_instance
 
-    # if not await bot_instance.payment_manager.check_payment(label):
-    #     await callback_query.answer("❌ Платёж не найден. Попробуйте позже.", show_alert=True)
-    #     return
+    if not await bot_instance.payment_manager.check_payment(label):
+        await callback_query.answer("❌ Платёж не найден. Попробуйте позже.", show_alert=True)
+        return
 
     user = await get_user(telegram_id)
     if not user:
@@ -46,7 +51,7 @@ async def check_payment_callback(callback_query: types.CallbackQuery):
         return
 
     is_paid_server = data.get("is_paid", False)
-    now = datetime.now()
+    now = datetime.now(tz=timezone.utc)
 
     if user.expires_at and user.expires_at > now:
         if not is_paid_server:
@@ -123,11 +128,9 @@ async def handle_main_menu(callback_query: types.CallbackQuery, state: FSMContex
             "/me – профиль\n"
             "/pay – оплата\n"
             "/create_config – создать конфиг\n\n"
-            "📬 По всем вопросам: <a href=\"https://t.me/Neimes\">свяжитесь с поддержкой</a>",
-            parse_mode="HTML"
-            .row(InlineKeyboardButton(text="🔙 Назад", callback_data="menu:back"))
-            .as_markup(),
-    )
+            '📬 По всем вопросам: <a href="https://t.me/Neimes">свяжитесь с поддержкой</a>',
+            parse_mode="HTML".row(InlineKeyboardButton(text="🔙 Назад", callback_data="menu:back")).as_markup(),
+        )
     elif data == "registration":
         await registration_callback(callback_query, state)
 
@@ -144,11 +147,9 @@ async def config_delete_callback(callback_query: types.CallbackQuery):
     await callback_query.answer("🔧 Функция удаления пока в разработке.")
 
 
-
 async def handle_admin_callbacks(callback_query: types.CallbackQuery, state: FSMContext):
     bot_instance = callback_query.bot.bot_instance
     data = callback_query.data.split(":")[1]
-    telegram_id = callback_query.from_user.id
     await callback_query.answer()
 
     if data == "main":
@@ -186,9 +187,10 @@ async def handle_admin_callbacks(callback_query: types.CallbackQuery, state: FSM
             await callback_query.message.edit_text("📅 Подписка продлена на 30 дней.")
         else:
             await handle_api_error(callback_query.message, result["status"], result["data"].get("error"))
-    
+
     else:
         await callback_query.message.answer("⏳ Эта функция пока в разработке.")
+
 
 @router.message(AdminState.waiting_for_user_id_lookup)
 async def handle_lookup_user(message: types.Message, state: FSMContext):
@@ -208,7 +210,7 @@ async def handle_lookup_user(message: types.Message, state: FSMContext):
             f"▪️ Админ: {'✅' if data.get('is_admin') else '❌'}\n"
         )
         await message.answer(user_info, parse_mode="HTML")
-    except Exception as e:
+    except Exception:
         await message.answer("❌ Ошибка. Убедитесь, что введён правильный ID.")
     await state.clear()
 
@@ -241,15 +243,16 @@ async def handle_extend_user(message: types.Message, state: FSMContext):
     except Exception:
         await message.answer("❌ Ошибка продления. Убедитесь, что ID корректный.")
     await state.clear()
-    
+
+
 async def show_user_selection(callback_query: types.CallbackQuery, offset: int, action: str):
     bot_instance = callback_query.bot.bot_instance
     response = await bot_instance.admin_api.get_all_users()
     users = response.get("data", [])
-    
+
     per_page = 5
     total = len(users)
-    users_page = users[offset:offset+per_page]
+    users_page = users[offset : offset + per_page]
 
     kb = InlineKeyboardBuilder()
     for user in users_page:
