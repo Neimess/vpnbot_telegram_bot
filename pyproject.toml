@@ -59,7 +59,8 @@ ignore = [
     "PLR0913", # too many arguments in function definition
     "PLR2004", # magic value used in comparison
     "T201",    # print
-    "PLR0915"  # Too many statement
+    "PLR0915",  # Too many statement
+    "DTZ005"    # Datetime   
 ]
 
 [tool.ruff]

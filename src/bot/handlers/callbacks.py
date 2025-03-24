@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from aiogram import Router, types
 from aiogram.fsm.context import FSMContext
@@ -51,7 +51,7 @@ async def check_payment_callback(callback_query: types.CallbackQuery):
         return
 
     is_paid_server = data.get("is_paid", False)
-    now = datetime.now(tz=timezone.utc)
+    now = datetime.now()
 
     if user.expires_at and user.expires_at > now:
         if not is_paid_server:
